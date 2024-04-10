@@ -10,8 +10,9 @@ public class Day5
 {
     public static void Main(string[] args)
     {
-        var input = File.ReadLines("data/day5example.txt");        
-        // var input = File.ReadLines("data/day5input.txt");
+        var fileName = args.Length > 0 && args[0] == "-x" ? 
+            "data/day5example.txt" : "data/day5input.txt";
+        var input = File.ReadLines(fileName);
 
         var result = Process(input);
 
@@ -39,24 +40,28 @@ public class Day5
 
     record Triple(long Base, long Start, long Length) {}
 
-    static (bool, Func<long, long>) MakeMap(IEnumerable<string> input)
+    static Func<long, long> MakeMap(IEnumerable<string> input)
     {
-
         var stream = input.GetEnumerator();
-        stream.MoveNext();
+        try {
+            stream.MoveNext();
+        } catch (InvalidOperationException) {
+            return null;
+        }
         Console.Error.WriteLine(stream.Current);
 
         var ranges = new List<Triple>();
         string line;
-        bool done = false;
 
-        while (done = stream.MoveNext()) {
+        while (stream.MoveNext()) {
             line = stream.Current;
             if (string.IsNullOrEmpty(line)) break;
             var nums = GetNumbersFromLine(line);
             Console.Error.WriteLine(string.Join(" ", nums));
             ranges.Add(new Triple(nums[0], nums[1], nums[2]));
         }
+
+        Console.Error.WriteLine(ranges.Last());
 
         long TheMap(long i)
         {
@@ -65,7 +70,7 @@ public class Day5
             return range.Base + i - range.Start;
         };
 
-        return (done, TheMap);
+        return TheMap;
     }
 
     record Result(long Part1, long Part2) {}
@@ -76,16 +81,15 @@ public class Day5
 
         Console.Error.WriteLine("seeds: " + string.Join(" ", seeds));
 
-        IEnumerable<(bool, Func<long, long>)> makeMaps() {
+        IEnumerable<Func<long, long>> makeMaps() {
             while (true) {
-                yield return MakeMap(input);
+                var map = MakeMap(input);
+                if (map == null) break;
+                yield return map;
             }
         }
 
-        var seedToLocation = makeMaps()
-                .TakeWhile(t => t.Item1)
-                .Select(t => t.Item2)
-                .Aggregate((f, g) => s => g(f(s)));
+        var seedToLocation = makeMaps().Aggregate((f, g) => s => g(f(s)));
 
         var part1 = seeds
             .Select(seedToLocation)
