@@ -44,7 +44,7 @@ public class Day5
 
         var stream = input.GetEnumerator();
         stream.MoveNext();
-        Console.WriteLine(stream.Current);
+        Console.Error.WriteLine(stream.Current);
 
         var ranges = new List<Triple>();
         string line;
@@ -54,7 +54,7 @@ public class Day5
             line = stream.Current;
             if (string.IsNullOrEmpty(line)) break;
             var nums = GetNumbersFromLine(line);
-            Console.WriteLine(string.Join(" ", nums));
+            Console.Error.WriteLine(string.Join(" ", nums));
             ranges.Add(new Triple(nums[0], nums[1], nums[2]));
         }
 
@@ -74,7 +74,7 @@ public class Day5
     {
         var seeds = MakeSeq(input);
 
-        Console.WriteLine("seeds: " + string.Join(" ", seeds));
+        Console.Error.WriteLine("seeds: " + string.Join(" ", seeds));
 
         IEnumerable<(bool, Func<long, long>)> makeMaps() {
             while (true) {
@@ -93,7 +93,6 @@ public class Day5
         Console.Error.WriteLine($"part1: {part1}");
 
         IEnumerable<long> CreateRange(long start, long end) {
-            Console.WriteLine($"CreateRange {start} {end}");
             for (long i = start; i < end; i++) {
                 yield return i;
             }
