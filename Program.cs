@@ -13,6 +13,8 @@ public class Day5
         var input = File.ReadLines("data/day5example.txt");        
         // var input = File.ReadLines("data/day5input.txt");
 
+        Enumerable.Range(1, 10).Chunk(2).ToList().ForEach(x => Console.WriteLine(x[0]));
+
         var result = Process(input);
 
         Console.WriteLine(result.Part1); // 174137457
@@ -53,20 +55,19 @@ public class Day5
         while (done = stream.MoveNext()) {
             line = stream.Current;
             if (string.IsNullOrEmpty(line)) break;
-            Console.WriteLine(line);
             var nums = GetNumbersFromLine(line);
             Console.WriteLine(string.Join(" ", nums));
             ranges.Add(new Triple(nums[0], nums[1], nums[2]));
         }
 
-        long func(long i)
+        long TheMap(long i)
         {
             var range = ranges.FirstOrDefault(r => r.Start <= i && i < r.Start + r.Length);
             if (range == null) return i;
             return range.Base + i - range.Start;
         };
 
-        return (done, func);
+        return (done, TheMap);
     }
 
     record Result(long Part1, long Part2) {}
@@ -93,18 +94,21 @@ public class Day5
             .Min();
         Console.Error.WriteLine($"part1: {part1}");
 
-        var part2 = -1;
+        IEnumerable<long> CreateRange(long start, long end) {
+            Console.WriteLine($"CreateRange {start} {end}");
+            for (long i = start; i < end; i++) {
+                yield return i;
+            }
+        }
 
-        // var part2 = seeds
-        //     .Chunk(2)
-        //     .Select(p =>
-        //     {
-        //         var head = p.First();
-        //         return Enumerable.Range((int)head, (int)p.Last())
-        //             .Select(seedToLocation)
-        //             .Min();
-        //     })
-        //     .Min();
+        var part2 = seeds
+            .Chunk(2)
+            .Select(p =>
+                CreateRange(p[0], p[0] + p[1])
+                    .Select(s => seedToLocation(s))
+                    .Min()
+            )
+            .Min();
         Console.Error.WriteLine($"part2: {part2}");
 
         return new Result(part1, part2);
