@@ -13,8 +13,6 @@ public class Day5
         var input = File.ReadLines("data/day5example.txt");        
         // var input = File.ReadLines("data/day5input.txt");
 
-        Enumerable.Range(1, 10).Chunk(2).ToList().ForEach(x => Console.WriteLine(x[0]));
-
         var result = Process(input);
 
         Console.WriteLine(result.Part1); // 174137457
