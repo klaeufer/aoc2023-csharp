@@ -40,7 +40,7 @@ public class Day5
 
     record Triple(long Base, long Start, long Length) {}
 
-    static Func<long, long> MakeMap(IEnumerable<string> input)
+    static Func<long, long>? MakeMap(IEnumerable<string> input)
     {
         var stream = input.GetEnumerator();
         try {
