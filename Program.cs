@@ -102,7 +102,7 @@ public class Day5
             .Chunk(2)
             .Select(p =>
                 CreateRange(p[0], p[0] + p[1])
-                    .Select(s => seedToLocation(s))
+                    .Select(seedToLocation)
                     .Min()
             )
             .Min();
