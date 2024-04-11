@@ -1,6 +1,5 @@
 ﻿using System.Text.RegularExpressions;
 
-
 public class Day5
 {
     public static void Main(string[] args)
